@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyword Responses</title>
+<style>
+
+  /* ====================================================================
+     EDIT ME — your keywords and responses.
+     Keys are matched case-insensitively and with extra spaces trimmed,
+     so "Hello", " hello ", and "HELLO" all match the "hello" entry.
+     Add or remove as many lines as you like.
+  ==================================================================== */
+
+  :root{
+    --paper:#faf8f5;
+    --ink:#221f26;
+    --muted:#6b6570;
+    --line:#e5e0db;
+    --accent:#3a5a8c;
+    --radius:8px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;min-height:100%}
+  body{
+    font:400 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color:var(--ink);
+    background-color:var(--paper);
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .card{
+    width:100%;
+    max-width:480px;
+    background:rgba(250,248,245,0.94);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:28px 26px 24px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+  }
+
+  h1{
+    margin:0 0 4px;
+    font-size:22px;
+    font-weight:600;
+  }
+  .sub{
+    margin:0 0 20px;
+    font-size:14px;
+    color:var(--muted);
+  }
+
+  form{display:flex;gap:8px}
+  #keyword{
+    flex:1;
+    padding:11px 13px;
+    font:inherit;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+  }
+  #keyword:focus,button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  button{
+    font:500 15px/1 inherit;
+    padding:11px 18px;
+    border:0;
+    border-radius:var(--radius);
+    background:var(--accent);
+    color:#fff;
+    cursor:pointer;
+  }
+  button:hover{opacity:0.92}
+
+  .response{
+    margin-top:18px;
+    padding:14px 16px;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    background:#fff;
+    min-height:1.4em;
+    display:none;
+  }
+  .response.show{display:block}
+  .response.miss{color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Keyword Responses</h1>
+  <p class="sub">Type a keyword and press Enter.</p>
+
+  <form id="form">
+    <input id="keyword" type="text" autocomplete="off" placeholder="Type a keyword…" aria-label="Keyword">
+    <button type="submit">Go</button>
+  </form>
+
+  <p class="response" id="response" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ====================================================================
+  // EDIT ME — add, remove, or change keywords and their responses here.
+  // ====================================================================
+  var RESPONSES = {
+    "hello":  "Hi there! Welcome to the page.",
+    "help":   "Type one of the page's keywords and press Enter to see its response.",
+    "about":  "This page matches a keyword you type against a short list of canned responses.",
+    "thanks": "You're welcome!"
+  };
+
+  // Set this to the filename of an image you've added to this same GitHub
+  // repo (e.g. "background.jpg") to give every visitor the same background
+  // by default. Leave it "" for no default background.
+  var DEFAULT_BACKGROUND = "";
+
+  // --------------------------------------------------------------------
+
+  var els = {
+    form:     document.getElementById('form'),
+    keyword:  document.getElementById('keyword'),
+    response: document.getElementById('response')
+  };
+
+  function norm(s) {
+    return String(s || '').trim().toLowerCase();
+  }
+
+  function showResponse(text, missed) {
+    els.response.textContent = text;
+    els.response.className = 'response show' + (missed ? ' miss' : '');
+  }
+
+  function lookup(raw) {
+    var key = norm(raw);
+    if (!key) return;
+    if (Object.prototype.hasOwnProperty.call(RESPONSES, key)) {
+      showResponse(RESPONSES[key], false);
+    } else {
+      var known = Object.keys(RESPONSES).join(', ');
+      showResponse('No response for "' + raw.trim() + '". Try one of: ' + known, true);
+    }
+  }
+
+  els.form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    lookup(els.keyword.value);
+  });
+
+  // ---- background image ----
+
+  if (DEFAULT_BACKGROUND) {
+    document.body.style.backgroundImage = 'url(' + JSON.stringify(DEFAULT_BACKGROUND).slice(1, -1) + ')';
+  }
+
+  els.keyword.focus();
+})();
+</script>
+</body>
+</html>
