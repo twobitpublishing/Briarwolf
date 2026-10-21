@@ -190,7 +190,7 @@
   }
 
   function showResponse(text, missed) {
-    els.response.textContent = text;
+    els.response.innerHTML = text;
     els.response.className = 'response show' + (missed ? ' miss' : '');
   }
 
