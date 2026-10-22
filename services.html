@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search indie author services</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF8F5;
+    --ink:#221F26;
+    --muted:#6B6570;
+    --line:#E5E0DB;
+    --berry:#8E2F5B;
+    --tint:#F1ECEF;
+    --radius:6px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font:400 16px/1.55 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:20px 20px 64px}
+
+  /* ---------- search + filters ---------- */
+  .controls{
+    position:sticky;top:0;z-index:5;
+    background:var(--paper);
+    padding-top:4px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+    margin-bottom:6px;
+  }
+  .searchbar{position:relative}
+  .searchbar svg{
+    position:absolute;left:14px;top:50%;transform:translateY(-50%);
+    width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:2;
+  }
+  #q{
+    width:100%;padding:14px 14px 14px 42px;
+    font:400 17px/1.3 Inter, sans-serif;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  }
+  #q::placeholder{color:#9B949E}
+  #q:focus,select:focus,button:focus-visible,a:focus-visible{
+    outline:2px solid var(--berry);outline-offset:2px;
+  }
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+  select{
+    appearance:none;
+    padding:8px 30px 8px 11px;
+    font:400 14px/1 Inter, sans-serif;color:var(--ink);
+    background:#fff url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B6570' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat right 11px center;
+    border:1px solid var(--line);border-radius:var(--radius);cursor:pointer;
+  }
+  .count{margin-left:auto;font-size:14px;color:var(--muted)}
+  #clear{
+    border:0;background:none;padding:8px 2px;cursor:pointer;
+    font:500 14px/1 Inter, sans-serif;color:var(--berry);
+    text-decoration:underline;text-underline-offset:3px;
+  }
+  #clear[hidden]{display:none}
+
+  /* ---------- results ---------- */
+  .service{
+    display:grid;grid-template-columns:215px 1fr;gap:18px;
+    padding:24px 0;border-bottom:1px solid var(--line);
+  }
+  .cover{
+    width:200px;border-radius:3px;object-fit:cover;
+    background:var(--tint);display:flex;align-items:center;justify-content:center;
+    font:400 24px/1 Newsreader, Georgia, serif;color:var(--berry);
+  }
+  h2{
+    margin:0;font:600 21px/1.25 Newsreader, Georgia, serif;
+    letter-spacing:-.005em;
+  }
+  h2 a{color:inherit;text-decoration:none}
+  h2 a:hover{text-decoration:underline;text-decoration-color:var(--berry);text-underline-offset:3px}
+  .blurb{margin:10px 0 0;font-size:15px;color:#4A4550;max-width:62ch}
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;align-items:center}
+  .tag{
+    border:1px solid var(--line);background:#fff;border-radius:99px;
+    padding:4px 11px;font:400 13px/1.3 Inter, sans-serif;color:#514C57;cursor:pointer;
+  }
+  .tag:hover{border-color:var(--berry);color:var(--berry)}
+  .badge{
+    border-radius:99px;padding:4px 11px;font:500 13px/1.3 Inter, sans-serif;
+    background:var(--tint);color:var(--berry);
+  }
+  .links{margin-top:12px;display:flex;flex-wrap:wrap;gap:16px}
+  .links a{font-size:14px;color:var(--berry);text-underline-offset:3px}
+  mark{background:#F7E6B0;color:inherit;padding:0 1px;border-radius:2px}
+
+  .empty{padding:56px 0;text-align:center;color:var(--muted)}
+  .empty strong{display:block;margin-bottom:6px;color:var(--ink);font-weight:600}
+  .notice{
+    margin:12px 0 0;padding:10px 12px;border:1px solid var(--line);
+    border-left:3px solid var(--berry);border-radius:var(--radius);
+    font-size:14px;color:#4A4550;background:#fff;
+  }
+  @media (max-width:520px){
+    .wrap{padding:16px 16px 48px}
+    .service{grid-template-columns:48px 1fr;gap:14px}
+    .cover{width:48px;font-size:19px}
+    h2{font-size:19px}
+    .count{margin-left:0;width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="controls">
+    <div class="searchbar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>
+      <input id="q" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Search services, specialties, keywords…"
+             aria-label="Search indie author services">
+    </div>
+    <div class="filters">
+      <select id="f-service"  aria-label="Filter by service"><option value="">All services</option></select>
+      <button id="clear" type="button" hidden>Clear filters</button>
+      <span class="count" id="count" role="status"></span>
+    </div>
+    <p class="notice" id="notice" hidden></p>
+  </div>
+
+  <div id="results"></div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   Indie Author Database — services search
+   Data lives in services.json, sitting next to this file.
+   Edit that file to add or change listings; nothing here needs touching.
+------------------------------------------------------------------ */
+
+// Shown only if services.json can't be loaded (e.g. opening this file
+// directly from your computer instead of through a web server).
+const FALLBACK = [
+  { title:"Sample service", summary:"services.json didn't load, so this placeholder is showing instead.",
+    services:["Editing"], tags:["Editing"], image:"", links:[] }
+];
+
+let services = [];
+const els = {
+  q:        document.getElementById('q'),
+  service:  document.getElementById('f-service'),
+  clear:    document.getElementById('clear'),
+  count:    document.getElementById('count'),
+  results:  document.getElementById('results'),
+  notice:   document.getElementById('notice')
+};
+
+load();
+
+async function load(){
+  try {
+    const res = await fetch('services.json', { cache:'no-cache' });
+    if (!res.ok) throw new Error(res.status);
+    services = await res.json();
+  } catch (err) {
+    services = FALLBACK;
+    els.notice.textContent = "Couldn't load services.json, so sample data is showing. If you're previewing this file from your computer, upload it to GitHub Pages instead — browsers block file loading on local pages.";
+    els.notice.hidden = false;
+  }
+
+  services.forEach(s => {
+    // Clean up any stray HTML entities in the source data first.
+    ['title', 'summary'].forEach(k => {
+      if (typeof s[k] === 'string') s[k] = decodeEntities(s[k]);
+    });
+    ['services', 'tags'].forEach(k => {
+      if (Array.isArray(s[k])) s[k] = s[k].map(decodeEntities);
+      else if (typeof s[k] === 'string') s[k] = decodeEntities(s[k]);
+    });
+    (s.links || []).forEach(l => { if (l && typeof l.label === 'string') l.label = decodeEntities(l.label); });
+
+    // "services" may be a single string or a list — treat both the same way.
+    s._services = [].concat(s.services || []).filter(Boolean).map(v => String(v).trim());
+    s._sortKey = (s.title || '').replace(/^(the|a|an)\s+/i, '').toLowerCase();
+    s._haystack = [
+      s.title, s.summary, s._services.join(' '), (s.tags || []).join(' ')
+    ].join(' ').toLowerCase();
+  });
+  services.sort((a, b) => a._sortKey.localeCompare(b._sortKey));
+
+  fillOptions(els.service, unique(services.flatMap(s => s._services)));
+
+  [els.q, els.service].forEach(el => el.addEventListener('input', render));
+  els.clear.addEventListener('click', reset);
+
+  render();
+}
+
+function unique(list){
+  return [...new Set(list.filter(Boolean).map(s => String(s).trim()))]
+    .sort((a, b) => a.localeCompare(b));
+}
+
+function fillOptions(select, values){
+  values.forEach(v => select.append(new Option(v, v)));
+}
+
+function render(){
+  const terms = els.q.value.toLowerCase().split(/\s+/).filter(Boolean);
+  const service = els.service.value;
+
+  const matches = services.filter(s =>
+    terms.every(t => s._haystack.includes(t)) &&
+    (!service || s._services.includes(service))
+  );
+
+  const filtering = terms.length || service;
+  els.clear.hidden = !filtering;
+  els.count.textContent = filtering
+    ? `${matches.length} of ${services.length} services`
+    : `${services.length} services`;
+
+  els.results.replaceChildren(
+    matches.length
+      ? frag(matches.map(s => card(s, terms)))
+      : emptyState(els.q.value)
+  );
+}
+
+function frag(nodes){
+  const f = document.createDocumentFragment();
+  nodes.forEach(n => f.append(n));
+  return f;
+}
+
+function card(s, terms){
+  const el = document.createElement('article');
+  el.className = 'service';
+
+  const primary = (s.links || [])[0];
+  const cover = s.image
+    ? `<img class="cover" src="${attr(s.image)}" alt="" loading="lazy">`
+    : `<div class="cover" aria-hidden="true">${esc((s.title || '?').trim()[0] || '?')}</div>`;
+
+  const title = highlight(s.title || 'Untitled', terms);
+  const heading = primary
+    ? `<a href="${attr(primary.url)}" target="_blank" rel="noopener">${title}</a>`
+    : title;
+
+  const serviceChips = s._services
+    .map(v => `<button class="tag" type="button" data-service="${attr(v)}">${esc(v)}</button>`)
+    .join('');
+
+  const tags = (s.tags || [])
+    .map(t => `<button class="tag" type="button" data-tag="${attr(t)}">${esc(t)}</button>`)
+    .join('');
+
+  const links = (s.links || [])
+    .map(l => `<a href="${attr(l.url)}" target="_blank" rel="noopener">${esc(l.label || 'Visit')}</a>`)
+    .join('');
+
+  el.innerHTML = `
+    ${cover}
+    <div>
+      <h2>${heading}</h2>
+      ${s.summary ? `<p class="blurb">${highlight(s.summary, terms)}</p>` : ''}
+      <div class="meta">${serviceChips}${tags}</div>
+      ${links ? `<div class="links">${links}</div>` : ''}
+    </div>`;
+
+  el.querySelectorAll('[data-service]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      els.service.value = btn.dataset.service;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  el.querySelectorAll('[data-tag]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      els.q.value = btn.dataset.tag;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  return el;
+}
+
+function emptyState(query){
+  const el = document.createElement('div');
+  el.className = 'empty';
+  el.innerHTML = query
+    ? `<strong>No services match “${esc(query)}”</strong>Try a single word, or a broader term like “editing”.`
+    : `<strong>No services match these filters</strong>Clear one and try again.`;
+  return el;
+}
+
+function reset(){
+  els.q.value = '';
+  els.service.value = '';
+  render();
+  els.q.focus();
+}
+
+/* --- small helpers --------------------------------------------- */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+function attr(s){ return esc(s); }
+
+// If services.json already contains HTML entities (e.g. "&#39;" instead of
+// a plain apostrophe — common when text is copied from a word processor or
+// exported from another system), decode them back to real characters here.
+// Otherwise esc() above would escape the "&" a second time and the entity
+// would show up on the page as literal text instead of a punctuation mark.
+const decoder = document.createElement('textarea');
+function decodeEntities(s){
+  if (s == null) return s;
+  decoder.innerHTML = String(s);
+  return decoder.value;
+}
+
+function highlight(text, terms){
+  text = String(text ?? '');
+  if (!terms.length) return esc(text);
+
+  // Match against the RAW text, not the escaped text — escaping first and
+  // then searching could match characters inside an entity like "&#39;"
+  // (e.g. searching "#"), splitting it apart so the browser can no longer
+  // parse it back into a punctuation mark.
+  const pattern = terms
+    .map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|');
+  const parts = text.split(new RegExp(`(${pattern})`, 'gi'));
+
+  // split() with a capturing group alternates: part, match, part, match…
+  return parts
+    .map((part, i) => (i % 2 === 1 ? `<mark>${esc(part)}</mark>` : esc(part)))
+    .join('');
+}
+</script>
+</body>
+</html>
