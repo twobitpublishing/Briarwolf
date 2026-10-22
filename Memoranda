@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link href='https://fonts.googleapis.com/css?family=archivo black' rel='stylesheet'>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyword Responses</title>
+<style>
+
+  /* ====================================================================
+     EDIT ME — your keywords and responses.
+     Keys are matched case-insensitively and with extra spaces trimmed,
+     so "Hello", " hello ", and "HELLO" all match the "hello" entry.
+     Add or remove as many lines as you like.
+  ==================================================================== */
+
+  :root{
+    --paper:#ceccc9;
+    --ink:#221f26;
+    --muted:#6b6570;
+    --line:#e5e0db;
+    --accent:#000000;
+    --radius:8px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;min-height:100%}
+  body{
+    font:200 20px/1.55 'Charm';
+    color:var(--ink);
+    background-color:var(--paper);
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:48px 24px 24px;
+  }
+
+    .card{
+    width:100%;
+    max-width:480px;
+    background:rgba(165,164,201,1);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:28px 26px 24px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.12);
+  }
+
+  .card-image{
+    display:block;
+    max-width:300px;
+    width:100%;
+    height:auto;
+    margin:0 auto 16px;
+  }
+  .card-image[hidden]{display:none}
+
+  h1{
+    margin:0 0 4px;
+    font-size:24px;
+    font-weight:600;
+  }
+  .sub{
+    margin:0 0 5px;
+    font-size:0px;
+    color:var(--muted);
+  }
+
+  form{display:flex;gap:8px}
+  #keyword{
+    flex:1;
+    padding:11px 13px;
+    font:inherit;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:#fff;
+  }
+  #keyword:focus,button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:2px;
+  }
+  button{
+    font:500 15px/1 inherit;
+    padding:11px 18px;
+    border:0;
+    border-radius:var(--radius);
+    background:var(--accent);
+    color:#fff;
+    cursor:pointer;
+  }
+  button:hover{opacity:0.92}
+
+  .response{
+  margin-top:18px;
+  padding:14px 16px;
+  border-radius:var(--radius);
+  border:1px solid var(--line);
+  background:#fff;
+  min-height:1.4em;
+  display:none;
+  white-space: pre-line;
+}
+  .response.show{display:block}
+  .response.miss{color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <img id="cardImage" class="card-image" alt="" hidden>
+  <h1>Enter Your Name</h1>
+  <p class="sub">Type your name and press Enter.</p>
+
+  <form id="form">
+    <input id="keyword" type="text" autocomplete="off" placeholder="Type a keyword…" aria-label="Keyword">
+    <button type="submit">Go</button>
+  </form>
+
+  <p class="response" id="response" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ====================================================================
+  // EDIT ME — add, remove, or change keywords and their responses here.
+  // ====================================================================
+  var RESPONSES = {
+    "kit": "Hello, Detective Critterson,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/DetectiveCritterson.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "onyx": "Hello, Onyx Glass,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/OnyxGlass.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "blee": "Hello, Blee Oyardy,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/BleeOyardy.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "pat": "Hello, Professor Pat Prinetto,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/PatPrinetto.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "viclan": "Hello, Viclan Wahl,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/ViclanWahl.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "taylor": "Hello, Taylor Slapdash,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/TaylorSlapdash.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "franky": "Hello, Franky Fontana,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/FrankyFontana.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "wimbly": "Hello, Wimbly Wickersham,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/WimblyWickersham.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "blake": "Hello, Blake Divine,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/BlakeDivine.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "phoenix": "Hello, Phoenix Phangly,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/PhoenixPhangly.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "alex": "Hello, Alex Basset,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/AlexBasset.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "arbor": "Hello, Arbor Thorne,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/ArborThorne.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "scout": "Hello, Scout Scrivener,\nThank you for signing in. Please download the dossier below.\n<a href=\"https://criminology.twobitpublishing.com/ScoutScrivener.pdf\" target=\"_blank\" rel=\"noopener\">Vladimir Rimidalv Dossier</a>",
+    "help": "Please sign in with your name to receive some much-needed information."
+  };
+
+  // Set this to the filename of an image you've added to this same GitHub
+  // repo (e.g. "background.jpg") to give every visitor the same background
+  // by default. Leave it "" for no default background.
+  var DEFAULT_BACKGROUND = "";
+
+  // Set this to the filename of a PNG you've added to this same GitHub repo
+  // (e.g. "logo.png") to show it inside the card, above the heading.
+  // Leave it "" to show no image.
+  var CARD_IMAGE = "copps.png";
+
+  // --------------------------------------------------------------------
+
+  var els = {
+    form:     document.getElementById('form'),
+    keyword:  document.getElementById('keyword'),
+    response: document.getElementById('response'),
+    cardImage:document.getElementById('cardImage')
+  };
+
+  function norm(s) {
+    return String(s || '').trim().toLowerCase();
+  }
+
+  function showResponse(text, missed) {
+    els.response.innerHTML = text;
+    els.response.className = 'response show' + (missed ? ' miss' : '');
+  }
+
+  function lookup(raw) {
+    var key = norm(raw);
+    if (!key) return;
+    if (Object.prototype.hasOwnProperty.call(RESPONSES, key)) {
+      showResponse(RESPONSES[key], false);
+    } else {
+      var known = Object.keys(RESPONSES).join(', ');
+      showResponse('No response for "' + raw.trim() + '".');
+    }
+  }
+
+  els.form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    lookup(els.keyword.value);
+  });
+
+  // ---- background image ----
+
+  if (DEFAULT_BACKGROUND) {
+    document.body.style.backgroundImage = 'url(' + JSON.stringify(DEFAULT_BACKGROUND).slice(1, -1) + ')';
+  }
+
+  // ---- card image ----
+
+  if (CARD_IMAGE) {
+    els.cardImage.src = CARD_IMAGE;
+    els.cardImage.hidden = false;
+  }
+
+  els.keyword.focus();
+})();
+</script>
+</body>
+</html>
