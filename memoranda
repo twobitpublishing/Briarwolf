@@ -153,7 +153,7 @@
   // Set this to the filename of a PNG you've added to this same GitHub repo
   // (e.g. "logo.png") to show it inside the card, above the heading.
   // Leave it "" to show no image.
-  var CARD_IMAGE = "intro.png";
+  var CARD_IMAGE = "copps.png";
 
   // --------------------------------------------------------------------
 
